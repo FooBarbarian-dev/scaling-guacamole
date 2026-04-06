@@ -2,7 +2,10 @@
 {% block title %}Chat — {{ app_name }}{% endblock %}
 {% block content %}
 <div class="chat-container">
-    <h2>{{ session.title }}</h2>
+    <div class="chat-header">
+        <h2>{{ session.title }}</h2>
+        <a href="{% url 'api:swagger-ui' %}" class="btn btn-small">API Docs</a>
+    </div>
     <div id="chat-messages" class="chat-messages">
         {% for msg in messages %}
             {% include "chat/partials/message.html" with messages=msg %}

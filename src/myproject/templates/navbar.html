@@ -21,12 +21,10 @@
             <a href="{% url 'accounts:login' %}">Login</a>
         {% endif %}
 
-        <div class="theme-toggle">
-            <select id="theme-select" aria-label="Select theme">
-                <option value="light">Light</option>
-                <option value="dark">Dark</option>
-                <option value="colorblind">Colorblind</option>
-            </select>
+        <div class="theme-toggle" role="radiogroup" aria-label="Select theme">
+            <button type="button" class="theme-toggle-btn" data-theme="light" aria-label="Light theme">Light</button>
+            <button type="button" class="theme-toggle-btn" data-theme="dark" aria-label="Dark theme">Dark</button>
+            <button type="button" class="theme-toggle-btn" data-theme="colorblind" aria-label="Colorblind theme">A11y</button>
         </div>
     </div>
 </nav>

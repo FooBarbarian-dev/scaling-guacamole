@@ -288,13 +288,44 @@ a:hover {
     flex: 1;
 }
 
-/* Theme toggle */
-.theme-toggle select {
-    padding: 0.25rem 0.5rem;
+/* Theme toggle — 3-way button group */
+.theme-toggle {
+    display: flex;
     border-radius: 4px;
-    border: 1px solid var(--color-border);
-    background: var(--color-navbar-bg);
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.theme-toggle-btn {
+    padding: 0.2rem 0.5rem;
+    border: none;
+    background: transparent;
     color: var(--color-navbar-text);
+    font-size: 0.75rem;
+    cursor: pointer;
+    opacity: 0.6;
+    transition: opacity 0.15s, background-color 0.15s;
+}
+
+.theme-toggle-btn:hover {
+    opacity: 0.85;
+}
+
+.theme-toggle-btn.active {
+    background: rgba(255, 255, 255, 0.15);
+    opacity: 1;
+}
+
+/* Chat header */
+.chat-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.btn-small {
+    padding: 0.25rem 0.75rem;
     font-size: 0.8rem;
 }
 

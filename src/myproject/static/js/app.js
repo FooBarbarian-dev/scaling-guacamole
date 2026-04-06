@@ -17,25 +17,24 @@
         document.documentElement.setAttribute("data-theme", theme);
         localStorage.setItem(THEME_KEY, theme);
 
-        // Update select if it exists
-        const select = document.getElementById("theme-select");
-        if (select) {
-            select.value = theme;
-        }
+        // Update toggle button active state
+        document.querySelectorAll(".theme-toggle-btn").forEach(function (btn) {
+            btn.classList.toggle("active", btn.dataset.theme === theme);
+        });
     }
 
     // Apply stored theme immediately on load
     applyTheme(getStoredTheme());
 
     document.addEventListener("DOMContentLoaded", function () {
-        // Theme toggle
-        const themeSelect = document.getElementById("theme-select");
-        if (themeSelect) {
-            themeSelect.value = getStoredTheme();
-            themeSelect.addEventListener("change", function () {
-                applyTheme(this.value);
+        // Theme toggle — 3-way button group
+        document.querySelectorAll(".theme-toggle-btn").forEach(function (btn) {
+            btn.addEventListener("click", function () {
+                applyTheme(this.dataset.theme);
             });
-        }
+        });
+        // Set initial active state
+        applyTheme(getStoredTheme());
 
         // HTMX configuration
         if (typeof htmx !== "undefined") {
