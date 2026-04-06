@@ -2,42 +2,60 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "name": "Django: Runserver",
+            "name": "Local: Runserver",
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/myproject/manage.py",
             "args": ["runserver", "0.0.0.0:8000"],
             "django": true,
             "env": {
-                "DJANGO_ENV": "development"
+                "DJANGO_ENV": "development",
+                "PYTHONPATH": "${workspaceFolder}/src"
             },
             "justMyCode": true
         },
         {
-            "name": "Django: Test Current File",
+            "name": "Local: Test Current File",
             "type": "debugpy",
             "request": "launch",
             "module": "pytest",
             "args": ["${file}", "-v"],
             "env": {
-                "DJANGO_ENV": "development"
+                "DJANGO_ENV": "development",
+                "PYTHONPATH": "${workspaceFolder}/src"
             },
             "justMyCode": true
         },
         {
-            "name": "Django: Shell Plus",
+            "name": "Local: Shell Plus",
             "type": "debugpy",
             "request": "launch",
             "program": "${workspaceFolder}/src/myproject/manage.py",
             "args": ["shell_plus"],
             "django": true,
             "env": {
-                "DJANGO_ENV": "development"
+                "DJANGO_ENV": "development",
+                "PYTHONPATH": "${workspaceFolder}/src"
             },
             "justMyCode": true
         },
         {
-            "name": "Django: Attach to Docker",
+            "name": "Docker: Runserver",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "/app/src/myproject/manage.py",
+            "args": ["runserver", "0.0.0.0:8000"],
+            "django": true,
+            "env": {
+                "DJANGO_ENV": "development"
+            },
+            "justMyCode": true,
+            "docker": {
+                "containerName": "web"
+            }
+        },
+        {
+            "name": "Docker: Attach to Container",
             "type": "debugpy",
             "request": "attach",
             "connect": {
