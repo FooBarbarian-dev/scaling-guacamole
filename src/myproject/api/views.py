@@ -1,26 +1,28 @@
 """API views — chat endpoint and viewsets."""
+import logging
+
 from rest_framework import status, viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from django_ai_assistant.helpers import use_cases
+
 from myproject.chat.models import ChatMessage, ChatSession
+from myproject.chat.views import ASSISTANT_ID, _get_or_create_session
 
 from .serializers import ChatMessageInputSerializer, ChatMessageSerializer, ChatSessionSerializer
 
+logger = logging.getLogger(__name__)
+
 
 class ChatMessageView(APIView):
-    """POST endpoint for sending chat messages."""
+    """POST endpoint for sending chat messages via AI Assistant."""
 
     def post(self, request):
         serializer = ChatMessageInputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        # Get or create a chat session for the user
-        session, _ = ChatSession.objects.get_or_create(
-            user=request.user,
-            is_active=True,
-            defaults={"title": "New Chat"},
-        )
+        session = _get_or_create_session(request.user)
 
         # Save the user message
         user_message = ChatMessage.objects.create(
@@ -29,8 +31,20 @@ class ChatMessageView(APIView):
             content=serializer.validated_data["message"],
         )
 
-        # TODO: Integrate with Django AI Assistant for actual AI response
-        ai_response = f"Echo: {user_message.content}"
+        # Send to Django AI Assistant
+        try:
+            result = use_cases.create_message(
+                assistant_id=ASSISTANT_ID,
+                thread=session.ai_thread,
+                user=request.user,
+                content=serializer.validated_data["message"],
+            )
+            ai_response = result.get("output", "")
+            if not ai_response:
+                ai_response = "(No response from assistant)"
+        except Exception:
+            logger.exception("AI Assistant error")
+            ai_response = "Sorry, something went wrong. Please try again."
 
         assistant_message = ChatMessage.objects.create(
             session=session,

@@ -1,9 +1,17 @@
 """Smoke tests — verify critical endpoints are reachable."""
+from unittest.mock import patch
+
 import pytest
 from django.contrib.auth import get_user_model
 from django.test import Client
 
+from django_ai_assistant.models import Thread
+
 User = get_user_model()
+
+
+def _mock_create_thread(name, assistant_id, user, **kwargs):
+    return Thread.objects.create(name=name, assistant_id=assistant_id, created_by=user)
 
 
 @pytest.mark.django_db
@@ -38,7 +46,8 @@ class TestSmokeEndpoints:
 
 @pytest.mark.django_db
 class TestNavbarRendering:
-    def test_authenticated_navbar_contains_api_link(self):
+    @patch("myproject.chat.views.use_cases.create_thread", side_effect=_mock_create_thread)
+    def test_authenticated_navbar_contains_api_link(self, mock_thread):
         User.objects.create_user(username="testuser", password="testpass123")
         client = Client()
         client.login(username="testuser", password="testpass123")
@@ -47,7 +56,8 @@ class TestNavbarRendering:
         assert "/api/v1/docs/" in content
         assert ">API<" in content
 
-    def test_authenticated_navbar_contains_theme_toggle_buttons(self):
+    @patch("myproject.chat.views.use_cases.create_thread", side_effect=_mock_create_thread)
+    def test_authenticated_navbar_contains_theme_toggle_buttons(self, mock_thread):
         User.objects.create_user(username="testuser", password="testpass123")
         client = Client()
         client.login(username="testuser", password="testpass123")
@@ -58,7 +68,8 @@ class TestNavbarRendering:
         assert 'data-theme="dark"' in content
         assert 'data-theme="colorblind"' in content
 
-    def test_base_template_includes_htmx_fallback(self):
+    @patch("myproject.chat.views.use_cases.create_thread", side_effect=_mock_create_thread)
+    def test_base_template_includes_htmx_fallback(self, mock_thread):
         User.objects.create_user(username="testuser", password="testpass123")
         client = Client()
         client.login(username="testuser", password="testpass123")

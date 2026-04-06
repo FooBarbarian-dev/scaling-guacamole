@@ -15,6 +15,14 @@ class ChatSession(TimeStampedModel):
     )
     title = models.CharField(max_length=255, default="New Chat")
     is_active = models.BooleanField(default=True)
+    ai_thread = models.ForeignKey(
+        "django_ai_assistant.Thread",
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="chat_sessions",
+        help_text="Link to the Django AI Assistant thread for this session.",
+    )
 
     class Meta:
         ordering = ["-created_at"]
