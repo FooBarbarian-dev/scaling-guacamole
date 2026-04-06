@@ -21,8 +21,26 @@ class TestChatSession:
         response = client.get("/chat/")
         assert response.status_code == 200
 
+    def test_chat_page_contains_api_link(self):
+        User.objects.create_user(username="testuser", password="testpass123")
+        client = Client()
+        client.login(username="testuser", password="testpass123")
+        response = client.get("/chat/")
+        content = response.content.decode()
+        assert "/api/v1/docs/" in content
+
+    def test_chat_page_contains_theme_toggle(self):
+        User.objects.create_user(username="testuser", password="testpass123")
+        client = Client()
+        client.login(username="testuser", password="testpass123")
+        response = client.get("/chat/")
+        content = response.content.decode()
+        assert 'data-theme="light"' in content
+        assert 'data-theme="dark"' in content
+        assert 'data-theme="colorblind"' in content
+
     def test_htmx_message_post(self):
-        user = User.objects.create_user(username="testuser", password="testpass123")
+        User.objects.create_user(username="testuser", password="testpass123")
         client = Client()
         client.login(username="testuser", password="testpass123")
         response = client.post(
@@ -31,9 +49,12 @@ class TestChatSession:
             HTTP_HX_REQUEST="true",
         )
         assert response.status_code == 200
+        content = response.content.decode()
+        assert "Hello, world!" in content
+        assert "Echo: Hello, world!" in content
 
     def test_empty_message_returns_empty(self):
-        user = User.objects.create_user(username="testuser", password="testpass123")
+        User.objects.create_user(username="testuser", password="testpass123")
         client = Client()
         client.login(username="testuser", password="testpass123")
         response = client.post(

@@ -1,6 +1,9 @@
 """Smoke tests — verify critical endpoints are reachable."""
 import pytest
+from django.contrib.auth import get_user_model
 from django.test import Client
+
+User = get_user_model()
 
 
 @pytest.mark.django_db
@@ -31,3 +34,35 @@ class TestSmokeEndpoints:
         client = Client()
         response = client.get("/api/v1/redoc/")
         assert response.status_code == 200
+
+
+@pytest.mark.django_db
+class TestNavbarRendering:
+    def test_authenticated_navbar_contains_api_link(self):
+        User.objects.create_user(username="testuser", password="testpass123")
+        client = Client()
+        client.login(username="testuser", password="testpass123")
+        response = client.get("/chat/")
+        content = response.content.decode()
+        assert "/api/v1/docs/" in content
+        assert ">API<" in content
+
+    def test_authenticated_navbar_contains_theme_toggle_buttons(self):
+        User.objects.create_user(username="testuser", password="testpass123")
+        client = Client()
+        client.login(username="testuser", password="testpass123")
+        response = client.get("/chat/")
+        content = response.content.decode()
+        assert "theme-toggle-btn" in content
+        assert 'data-theme="light"' in content
+        assert 'data-theme="dark"' in content
+        assert 'data-theme="colorblind"' in content
+
+    def test_base_template_includes_htmx_fallback(self):
+        User.objects.create_user(username="testuser", password="testpass123")
+        client = Client()
+        client.login(username="testuser", password="testpass123")
+        response = client.get("/chat/")
+        content = response.content.decode()
+        assert "htmx.min.js" in content
+        assert "unpkg.com/htmx.org" in content
