@@ -9,6 +9,7 @@
     <div class="navbar-menu">
         {% if user.is_authenticated %}
             <a href="{% url 'chat:session' %}">Chat</a>
+            <a href="{% url 'api:swagger-ui' %}">API</a>
             {% if user.is_staff %}
                 <a href="{% url 'admin:index' %}">Admin</a>
             {% endif %}
@@ -22,9 +23,9 @@
         {% endif %}
 
         <div class="theme-toggle" role="radiogroup" aria-label="Select theme">
-            <button type="button" class="theme-toggle-btn" data-theme="light" aria-label="Light theme">Light</button>
-            <button type="button" class="theme-toggle-btn" data-theme="dark" aria-label="Dark theme">Dark</button>
-            <button type="button" class="theme-toggle-btn" data-theme="colorblind" aria-label="Colorblind theme">A11y</button>
+            <button type="button" class="theme-toggle-btn" data-theme="light" aria-label="Light theme" title="Light">&#9788;</button>
+            <button type="button" class="theme-toggle-btn" data-theme="dark" aria-label="Dark theme" title="Dark">&#9790;</button>
+            <button type="button" class="theme-toggle-btn" data-theme="colorblind" aria-label="Colorblind theme" title="Colorblind">&#9673;</button>
         </div>
     </div>
 </nav>

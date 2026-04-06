@@ -25,6 +25,14 @@
     </main>
 
     <script src="{% static 'vendor/htmx.min.js' %}"></script>
+    <script>
+        if (typeof htmx === "undefined") {
+            // Fallback to CDN if vendored HTMX is missing or placeholder
+            var s = document.createElement("script");
+            s.src = "https://unpkg.com/htmx.org@2.0.4";
+            document.head.appendChild(s);
+        }
+    </script>
     <script src="{% static 'js/app.js' %}"></script>
     {% block extra_js %}{% endblock %}
 </body>
