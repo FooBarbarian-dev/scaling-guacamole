@@ -1,0 +1,32 @@
+# Development Dockerfile
+FROM python:3.13-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libpq-dev \
+    bash \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Python dependencies including test extras
+COPY requirements.txt requirements.test.txt ./
+RUN pip install --no-cache-dir -r requirements.txt -r requirements.test.txt
+
+# Install debugpy for remote debugging
+RUN pip install --no-cache-dir debugpy
+
+# Copy application code
+COPY . .
+
+ENV DJANGO_ENV=development
+ENV PYTHONPATH=/app/src
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+EXPOSE 8000
+# debugpy port
+EXPOSE 5678
+
+CMD ["bash", "docker/scripts/entrypoint.sh"]

@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=75.0", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "myproject"  # TODO: Replace with project name
+description = "My Project"  # TODO: Add description
+authors = [
+    {name = "Example User", email = "example.user@1st-edge.com"}  # TODO: Add real authors
+]
+readme = "README.md"
+requires-python = ">=3.13"
+license = {text = "MIT"}  # TODO: Choose license
+dynamic = ['version', 'dependencies', 'optional-dependencies']
+
+[project.scripts]
+manage = "myproject.manage:main"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.dynamic]
+version = {file = "VERSION"}
+dependencies = {file = ["requirements.txt"]}
+optional-dependencies.test = {file = ["requirements.test.txt"]}
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "myproject.settings"
+python_files = ["tests.py", "test_*.py"]
+python_paths = ["src"]
+addopts = "--reuse-db --tb=short -q"
+
+[tool.mypy]
+plugins = ["mypy_django_plugin.main"]
+python_version = "3.13"
+warn_return_any = true
+warn_unused_configs = true
+
+[tool.django-stubs]
+django_settings_module = "myproject.settings"
+
+[tool.ruff]
+src = ["src"]
+target-version = "py313"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP", "DJ"]
+
+[tool.bumpversion]
+current_version_file = "VERSION"

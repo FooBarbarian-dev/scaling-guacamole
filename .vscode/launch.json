@@ -1,0 +1,57 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Django: Runserver",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/myproject/manage.py",
+            "args": ["runserver", "0.0.0.0:8000"],
+            "django": true,
+            "env": {
+                "DJANGO_ENV": "development"
+            },
+            "justMyCode": true
+        },
+        {
+            "name": "Django: Test Current File",
+            "type": "debugpy",
+            "request": "launch",
+            "module": "pytest",
+            "args": ["${file}", "-v"],
+            "env": {
+                "DJANGO_ENV": "development"
+            },
+            "justMyCode": true
+        },
+        {
+            "name": "Django: Shell Plus",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/src/myproject/manage.py",
+            "args": ["shell_plus"],
+            "django": true,
+            "env": {
+                "DJANGO_ENV": "development"
+            },
+            "justMyCode": true
+        },
+        {
+            "name": "Django: Attach to Docker",
+            "type": "debugpy",
+            "request": "attach",
+            "connect": {
+                "host": "localhost",
+                "port": 5678
+            },
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}",
+                    "remoteRoot": "/app"
+                }
+            ],
+            "django": true,
+            "justMyCode": true
+        }
+    ]
+}

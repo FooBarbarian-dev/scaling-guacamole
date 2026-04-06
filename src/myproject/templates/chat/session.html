@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Chat — {{ app_name }}{% endblock %}
+{% block content %}
+<div class="chat-container">
+    <h2>{{ session.title }}</h2>
+    <div id="chat-messages" class="chat-messages">
+        {% for msg in messages %}
+            {% include "chat/partials/message.html" with messages=msg %}
+        {% endfor %}
+    </div>
+
+    <form hx-post="{% url 'chat:send-message' %}"
+          hx-target="#chat-messages"
+          hx-swap="beforeend"
+          hx-on::after-request="this.reset(); document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;"
+          class="chat-input-form">
+        {% csrf_token %}
+        <div class="chat-input-group">
+            <input type="text" name="message" placeholder="Type a message..."
+                   class="form-input chat-input" autocomplete="off" required>
+            <button type="submit" class="btn btn-primary">Send</button>
+        </div>
+    </form>
+</div>
+{% endblock %}

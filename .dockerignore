@@ -1,0 +1,44 @@
+# Git
+.git/
+
+# Environment files (secrets)
+.env
+.env.local
+.env.*.local
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Type checking and test caches
+.mypy_cache/
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Node
+node_modules/
+
+# Editor configs
+.vscode/
+.zed/
+.idea/
+
+# Build artifacts
+*.egg-info/
+dist/
+build/
+
+# Documentation (not needed in container)
+docs/
+
+# Conda
+.conda/
+
+# Static file output (generated at runtime)
+staticfiles/
+
+# Markdown (except README.md if needed)
+*.md
+!README.md

@@ -1,0 +1,11 @@
+name: myproject  # TODO: rename to project name
+channels:
+  - conda-forge
+dependencies:
+  - python==3.13.*
+  - pip
+  - pip:
+      - bump-my-version
+      - coverage
+      - pylint
+      - -e .[test]

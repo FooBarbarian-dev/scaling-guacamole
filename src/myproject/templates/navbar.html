@@ -1,0 +1,32 @@
+{% load static %}
+<nav class="navbar">
+    <div class="navbar-brand">
+        <a href="/">
+            <img src="{% static 'img/logo.svg' %}" alt="{{ app_name }}" class="navbar-logo">
+            <span>{{ app_name }}</span>
+        </a>
+    </div>
+    <div class="navbar-menu">
+        {% if user.is_authenticated %}
+            <a href="{% url 'chat:session' %}">Chat</a>
+            {% if user.is_staff %}
+                <a href="{% url 'admin:index' %}">Admin</a>
+            {% endif %}
+            <span class="navbar-user">{{ user.username }}</span>
+            <form method="post" action="{% url 'accounts:logout' %}" class="navbar-logout">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-link">Logout</button>
+            </form>
+        {% else %}
+            <a href="{% url 'accounts:login' %}">Login</a>
+        {% endif %}
+
+        <div class="theme-toggle">
+            <select id="theme-select" aria-label="Select theme">
+                <option value="light">Light</option>
+                <option value="dark">Dark</option>
+                <option value="colorblind">Colorblind</option>
+            </select>
+        </div>
+    </div>
+</nav>
