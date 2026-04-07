@@ -51,7 +51,7 @@ class TestNavbarRendering:
         User.objects.create_user(username="testuser", password="testpass123")
         client = Client()
         client.login(username="testuser", password="testpass123")
-        response = client.get("/chat/")
+        response = client.get("/chat/", follow=True)
         content = response.content.decode()
         assert "/api/v1/docs/" in content
         assert ">API<" in content
@@ -61,7 +61,7 @@ class TestNavbarRendering:
         User.objects.create_user(username="testuser", password="testpass123")
         client = Client()
         client.login(username="testuser", password="testpass123")
-        response = client.get("/chat/")
+        response = client.get("/chat/", follow=True)
         content = response.content.decode()
         assert "theme-toggle-btn" in content
         assert 'data-theme="light"' in content
@@ -73,7 +73,7 @@ class TestNavbarRendering:
         User.objects.create_user(username="testuser", password="testpass123")
         client = Client()
         client.login(username="testuser", password="testpass123")
-        response = client.get("/chat/")
+        response = client.get("/chat/", follow=True)
         content = response.content.decode()
         assert "htmx.min.js" in content
         assert "unpkg.com/htmx.org" in content

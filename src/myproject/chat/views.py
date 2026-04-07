@@ -3,7 +3,7 @@ import logging
 
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_POST
 
 from django_ai_assistant.helpers import use_cases
@@ -15,24 +15,13 @@ logger = logging.getLogger(__name__)
 ASSISTANT_ID = "project-assistant"
 
 
-def _get_or_create_session(user):
-    """Get the active chat session for a user, creating one with an AI thread if needed."""
-    session = ChatSession.objects.filter(user=user, is_active=True).first()
-    if session and session.ai_thread:
-        return session
-
-    # Create a new AI assistant thread
+def _create_session(user):
+    """Create a new chat session with a linked AI assistant thread."""
     thread = use_cases.create_thread(
         name="Chat",
         assistant_id=ASSISTANT_ID,
         user=user,
     )
-
-    if session and not session.ai_thread:
-        session.ai_thread = thread
-        session.save(update_fields=["ai_thread"])
-        return session
-
     return ChatSession.objects.create(
         user=user,
         title="New Chat",
@@ -40,26 +29,62 @@ def _get_or_create_session(user):
     )
 
 
+def _ensure_thread(session, user):
+    """Ensure a session has an AI thread, creating one if missing."""
+    if session.ai_thread:
+        return session
+    thread = use_cases.create_thread(
+        name="Chat",
+        assistant_id=ASSISTANT_ID,
+        user=user,
+    )
+    session.ai_thread = thread
+    session.save(update_fields=["ai_thread"])
+    return session
+
+
 @login_required
-def chat_session(request):
-    """Render the chat page."""
-    session = _get_or_create_session(request.user)
-    messages = session.messages.all()
+def chat_session(request, session_id=None):
+    """Render the chat page for a specific session or the most recent one."""
+    sessions = ChatSession.objects.filter(user=request.user).order_by("-created_at")
+
+    if session_id:
+        session = get_object_or_404(ChatSession, pk=session_id, user=request.user)
+    elif sessions.exists():
+        session = sessions.first()
+    else:
+        session = _create_session(request.user)
+        return redirect("chat:session-detail", session_id=session.pk)
+
+    session = _ensure_thread(session, request.user)
+    chat_messages = session.messages.all()
+
     return render(request, "chat/session.html", {
         "session": session,
-        "messages": messages,
+        "sessions": sessions,
+        "chat_messages": chat_messages,
     })
 
 
 @login_required
+def new_session(request):
+    """Create a new chat session and redirect to it."""
+    # Mark all existing active sessions as inactive
+    ChatSession.objects.filter(user=request.user, is_active=True).update(is_active=False)
+    session = _create_session(request.user)
+    return redirect("chat:session-detail", session_id=session.pk)
+
+
+@login_required
 @require_POST
-def send_message(request):
+def send_message(request, session_id):
     """Handle HTMX message submission — sends to Django AI Assistant."""
     content = request.POST.get("message", "").strip()
     if not content:
         return HttpResponse("")
 
-    session = _get_or_create_session(request.user)
+    session = get_object_or_404(ChatSession, pk=session_id, user=request.user)
+    session = _ensure_thread(session, request.user)
 
     # Save user message to our local model
     user_msg = ChatMessage.objects.create(

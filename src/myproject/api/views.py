@@ -8,7 +8,7 @@ from rest_framework.views import APIView
 from django_ai_assistant.helpers import use_cases
 
 from myproject.chat.models import ChatMessage, ChatSession
-from myproject.chat.views import ASSISTANT_ID, _get_or_create_session
+from myproject.chat.views import ASSISTANT_ID, _create_session, _ensure_thread
 
 from .serializers import ChatMessageInputSerializer, ChatMessageSerializer, ChatSessionSerializer
 
@@ -22,7 +22,11 @@ class ChatMessageView(APIView):
         serializer = ChatMessageInputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        session = _get_or_create_session(request.user)
+        session = ChatSession.objects.filter(user=request.user, is_active=True).first()
+        if not session:
+            session = _create_session(request.user)
+        else:
+            session = _ensure_thread(session, request.user)
 
         # Save the user message
         user_message = ChatMessage.objects.create(

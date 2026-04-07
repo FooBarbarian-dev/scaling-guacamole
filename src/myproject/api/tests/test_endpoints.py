@@ -21,7 +21,7 @@ def _mock_create_message(assistant_id, thread, user, content, **kwargs):
 
 @pytest.mark.django_db
 class TestChatEndpoint:
-    @patch("myproject.chat.views.use_cases.create_message", side_effect=_mock_create_message)
+    @patch("myproject.api.views.use_cases.create_message", side_effect=_mock_create_message)
     @patch("myproject.chat.views.use_cases.create_thread", side_effect=_mock_create_thread)
     def test_chat_with_auth_returns_200(self, mock_thread, mock_msg):
         user = User.objects.create_user(username="testuser", password="testpass123")
