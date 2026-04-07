@@ -19,6 +19,7 @@ All environment variables used by the project, with their purpose, default value
 | `ENABLE_TEMPORAL_POST_PROCESSING` | Enable Temporal workflow on chat message save | `False` | No |
 | `EMAIL_BACKEND` | Django email backend class | `django.core.mail.backends.console.EmailBackend` | No |
 | `GUNICORN_WORKERS` | Number of Gunicorn worker processes (prod) | `2 * CPU + 1` | No |
+| `TEST_DATABASE_URL` | Override database for tests (skips testcontainer) | _(auto from testcontainer)_ | No |
 
 ## Notes
 

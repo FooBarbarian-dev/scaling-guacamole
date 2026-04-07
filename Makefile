@@ -7,9 +7,9 @@ dev:
 prod:
 	docker compose -f docker/compose.yaml -f docker/compose.prod.yaml up -d --build
 
-# Testing
+# Testing (uses testcontainers — no live DB needed)
 test:
-	python -m pytest --cov=src/ --cov-report=term-missing
+	DJANGO_SETTINGS_MODULE=myproject.settings.test python -m pytest --cov=src/ --cov-report=term-missing
 
 lint:
 	ruff check src/ tests/

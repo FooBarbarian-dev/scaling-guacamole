@@ -28,7 +28,7 @@ dependencies = {file = ["requirements.txt"]}
 optional-dependencies.test = {file = ["requirements.test.txt"]}
 
 [tool.pytest.ini_options]
-DJANGO_SETTINGS_MODULE = "myproject.settings"
+DJANGO_SETTINGS_MODULE = "myproject.settings.test"
 python_files = ["tests.py", "test_*.py"]
 python_paths = ["src"]
 addopts = "--reuse-db --tb=short -q"
@@ -40,7 +40,7 @@ warn_return_any = true
 warn_unused_configs = true
 
 [tool.django-stubs]
-django_settings_module = "myproject.settings"
+django_settings_module = "myproject.settings.test"
 
 [tool.ruff]
 src = ["src"]
