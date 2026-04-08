@@ -14,24 +14,16 @@ import pytest
 # Testcontainer: session-scoped PostgreSQL
 # ──────────────────────────────────────────────────────────────────────
 
-@pytest.fixture(scope="session")
-def _pg_container():
-    """Start a PostgreSQL 18 container once for the entire test session.
+def _start_postgres_container():
+    """Start a Postgres testcontainer and return the connection URL.
 
-    Yields the container instance. Stopped + removed on session teardown.
-    If Docker is not available, skip gracefully so CI can provide its own
-    DATABASE_URL instead.
+    Returns None if testcontainers is not installed (falls back to
+    whatever DATABASE_URL is configured in test settings).
     """
-    # If an external test DB is already configured, don't start a container
-    if os.environ.get("TEST_DATABASE_URL"):
-        yield None
-        return
-
     try:
         from testcontainers.postgres import PostgresContainer
     except ImportError:
-        pytest.skip("testcontainers[postgres] not installed — provide TEST_DATABASE_URL instead")
-        return
+        return None
 
     pg = (
         PostgresContainer(
@@ -42,17 +34,35 @@ def _pg_container():
         )
         .with_env("PGDATA", "/var/lib/postgresql/18/docker")
     )
-    with pg:
-        url = pg.get_connection_url().replace("psycopg2", "psycopg")
-        os.environ["TEST_DATABASE_URL"] = url
-        yield pg
+    pg.start()
+    url = pg.get_connection_url().replace("psycopg2", "psycopg")
+    return pg, url
 
-    # Clean up env when session ends
+
+# Module-level container — started once when conftest is first loaded,
+# reused for the entire pytest session. This avoids pytest.skip() in a
+# session fixture (which propagates skips to all dependent tests).
+_container = None
+_container_url = None
+
+if not os.environ.get("TEST_DATABASE_URL"):
+    _result = _start_postgres_container()
+    if _result is not None:
+        _container, _container_url = _result
+        os.environ["TEST_DATABASE_URL"] = _container_url
+
+
+def pytest_sessionfinish(session, exitstatus):
+    """Stop the testcontainer when the pytest session ends."""
+    global _container
+    if _container is not None:
+        _container.stop()
+        _container = None
     os.environ.pop("TEST_DATABASE_URL", None)
 
 
 @pytest.fixture(scope="session")
-def django_db_setup(_pg_container, django_test_environment):
+def django_db_setup(django_test_environment):
     """Override pytest-django's DB setup to use our testcontainer.
 
     pytest-django calls this fixture to create the test database.
