@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Chat — {{ app_name }}{% endblock %}
+{% block content %}
+<div class="chat-layout">
+    <aside class="chat-sidebar">
+        <a href="{% url 'chat:new-session' %}" class="btn btn-primary sidebar-new-chat">+ New Chat</a>
+        <ul class="session-list">
+            {% for s in sessions %}
+            <li>
+                <a href="{% url 'chat:session-detail' session_id=s.pk %}"
+                   class="session-link {% if s.pk == session.pk %}active{% endif %}">
+                    {{ s.title }}
+                    <span class="session-date">{{ s.created_at|date:"M j" }}</span>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </aside>
+
+    <div class="chat-main">
+        <h2>{{ session.title }}</h2>
+        <div id="chat-messages" class="chat-messages">
+            {% for msg in chat_messages %}
+                {% include "chat/partials/message.html" with message=msg %}
+            {% empty %}
+                <div class="chat-empty">No messages yet. Start the conversation!</div>
+            {% endfor %}
+        </div>
+
+        <form hx-post="{% url 'chat:send-message' session_id=session.pk %}"
+              hx-target="#chat-messages"
+              hx-swap="beforeend"
+              hx-on::after-request="this.reset(); document.getElementById('chat-messages').scrollTop = document.getElementById('chat-messages').scrollHeight;"
+              class="chat-input-form">
+            {% csrf_token %}
+            <div class="chat-input-group">
+                <input type="text" name="message" placeholder="Type a message..."
+                       class="form-input chat-input" autocomplete="off" required>
+                <button type="submit" class="btn btn-primary">Send</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

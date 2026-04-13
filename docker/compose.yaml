@@ -1,0 +1,98 @@
+# Development Docker Compose configuration
+services:
+  postgres:
+    image: postgres:18
+    # CRITICAL: Postgres 18 changed the default data directory.
+    # The named volume must be mounted at /var/lib/postgresql (NOT /var/lib/postgresql/data).
+    # PGDATA must be set explicitly to /var/lib/postgresql/18/docker.
+    # See: https://github.com/docker-library/postgres/issues/1107
+    environment:
+      POSTGRES_DB: myproject
+      POSTGRES_USER: myproject
+      POSTGRES_PASSWORD: myproject
+      PGDATA: /var/lib/postgresql/18/docker
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U myproject"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    # Note: Redis 8+ uses tri-license (RSALv2/SSPLv1/AGPLv3).
+    # Evaluate license compatibility for your use case.
+    image: redis:8-alpine
+    ports:
+      - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  temporalio:
+    image: temporalio/auto-setup:latest
+    ports:
+      - "7233:7233"
+    environment:
+      - DB=sqlite
+      - DYNAMIC_CONFIG_FILE_PATH=config/dynamicconfig/development-sql.yaml
+
+  temporalio-ui:
+    image: temporalio/ui:latest
+    ports:
+      - "8080:8080"
+    environment:
+      - TEMPORAL_ADDRESS=temporalio:7233
+    depends_on:
+      - temporalio
+
+  web:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.dev
+    ports:
+      - "8000:8000"
+    volumes:
+      - ../src:/app/src
+    env_file:
+      - ../.env
+    environment:
+      - DJANGO_ENV=development
+      - DATABASE_URL=postgres://myproject:myproject@postgres:5432/myproject
+      - REDIS_URL=redis://redis:6379/0
+      - TEMPORALIO_HOST=temporalio:7233
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      temporalio:
+        condition: service_started
+    command: ["bash", "docker/scripts/entrypoint.sh"]
+
+  temporal-worker:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.dev
+    env_file:
+      - ../.env
+    environment:
+      - DJANGO_ENV=development
+      - DATABASE_URL=postgres://myproject:myproject@postgres:5432/myproject
+      - REDIS_URL=redis://redis:6379/0
+      - TEMPORALIO_HOST=temporalio:7233
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      temporalio:
+        condition: service_started
+    command: ["python", "src/myproject/manage.py", "start_temporalio_worker", "--all"]
+
+volumes:
+  postgres_data:

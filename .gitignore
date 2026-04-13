@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+dist/
+build/
+*.egg
+.eggs/
+
+# Django
+*.sqlite3
+db.sqlite3
+/staticfiles/
+/mediafiles/
+
+# Environment
+.env
+.env.local
+.env.*.local
+# .env.example is tracked
+
+# IDE
+.idea/
+*.swp
+*.swo
+*~
+# .vscode/launch.json and .zed/debug.json are tracked
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
+.coverage
+htmlcov/
+.pytest_cache/
+.mypy_cache/
+
+# Node (for vendored HTMX updates)
+node_modules/
+
+# Conda
+.conda/

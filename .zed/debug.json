@@ -1,0 +1,46 @@
+{
+    "configurations": [
+        {
+            "label": "Local: Runserver",
+            "adapter": "debugpy",
+            "request": "launch",
+            "program": "src/myproject/manage.py",
+            "args": ["runserver", "0.0.0.0:8000"],
+            "env": {
+                "DJANGO_ENV": "development",
+                "PYTHONPATH": "src"
+            }
+        },
+        {
+            "label": "Local: Test Current File",
+            "adapter": "debugpy",
+            "request": "launch",
+            "module": "pytest",
+            "args": ["${file}", "-v"],
+            "env": {
+                "DJANGO_ENV": "development",
+                "PYTHONPATH": "src"
+            }
+        },
+        {
+            "label": "Local: Shell Plus",
+            "adapter": "debugpy",
+            "request": "launch",
+            "program": "src/myproject/manage.py",
+            "args": ["shell_plus"],
+            "env": {
+                "DJANGO_ENV": "development",
+                "PYTHONPATH": "src"
+            }
+        },
+        {
+            "label": "Docker: Attach to Container",
+            "adapter": "debugpy",
+            "request": "attach",
+            "connect": {
+                "host": "localhost",
+                "port": 5678
+            }
+        }
+    ]
+}

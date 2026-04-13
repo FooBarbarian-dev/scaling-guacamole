@@ -1,0 +1,13 @@
+{% if messages %}
+    {% for msg in messages %}
+    <div class="chat-message chat-message-{{ msg.role }}">
+        <div class="chat-message-role">{{ msg.role|title }}</div>
+        <div class="chat-message-content">{{ msg.content }}</div>
+    </div>
+    {% endfor %}
+{% elif message %}
+    <div class="chat-message chat-message-{{ message.role }}">
+        <div class="chat-message-role">{{ message.role|title }}</div>
+        <div class="chat-message-content">{{ message.content }}</div>
+    </div>
+{% endif %}

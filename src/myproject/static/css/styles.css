@@ -1,0 +1,413 @@
+/* Base styles with theme support (light/dark/colorblind) */
+
+/* Light theme (default) */
+:root {
+    --color-bg: #ffffff;
+    --color-bg-secondary: #f5f5f5;
+    --color-text: #333333;
+    --color-text-muted: #666666;
+    --color-primary: #2563eb;
+    --color-primary-hover: #1d4ed8;
+    --color-border: #e0e0e0;
+    --color-error: #dc2626;
+    --color-success: #16a34a;
+    --color-warning: #d97706;
+    --color-link: #2563eb;
+    --color-navbar-bg: #1e293b;
+    --color-navbar-text: #f1f5f9;
+    --color-chat-user: #e0e7ff;
+    --color-chat-assistant: #f0fdf4;
+    --color-input-bg: #ffffff;
+    --color-input-border: #d1d5db;
+}
+
+/* Dark theme */
+[data-theme="dark"] {
+    --color-bg: #1a1a2e;
+    --color-bg-secondary: #16213e;
+    --color-text: #e0e0e0;
+    --color-text-muted: #a0a0a0;
+    --color-primary: #60a5fa;
+    --color-primary-hover: #93c5fd;
+    --color-border: #374151;
+    --color-error: #f87171;
+    --color-success: #4ade80;
+    --color-warning: #fbbf24;
+    --color-link: #60a5fa;
+    --color-navbar-bg: #0f172a;
+    --color-navbar-text: #f1f5f9;
+    --color-chat-user: #1e3a5f;
+    --color-chat-assistant: #1a2e1a;
+    --color-input-bg: #1e293b;
+    --color-input-border: #475569;
+}
+
+/* Colorblind-safe theme (IBM palette) */
+[data-theme="colorblind"] {
+    --color-bg: #ffffff;
+    --color-bg-secondary: #f5f5f5;
+    --color-text: #333333;
+    --color-text-muted: #555555;
+    --color-primary: #648FFF;       /* IBM Blue */
+    --color-primary-hover: #785EF0; /* IBM Violet */
+    --color-border: #cccccc;
+    --color-error: #DC267F;         /* IBM Red */
+    --color-success: #648FFF;       /* Use blue instead of green */
+    --color-warning: #FE6100;       /* IBM Orange */
+    --color-link: #648FFF;          /* IBM Blue */
+    --color-navbar-bg: #333333;
+    --color-navbar-text: #FFB000;   /* IBM Yellow — high contrast on dark */
+    --color-chat-user: #e8ecff;
+    --color-chat-assistant: #fff5e6;
+    --color-input-bg: #ffffff;
+    --color-input-border: #999999;
+}
+
+/* Reset and base styles */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    line-height: 1.6;
+    min-height: 100vh;
+}
+
+a {
+    color: var(--color-link);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+/* Container */
+.container {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+/* Navbar */
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: var(--color-navbar-bg);
+    color: var(--color-navbar-text);
+    padding: 0.75rem 1.5rem;
+}
+
+.navbar a {
+    color: var(--color-navbar-text);
+    margin-right: 1rem;
+}
+
+.navbar-brand a {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.navbar-logo {
+    height: 28px;
+    width: auto;
+}
+
+.navbar-menu {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.navbar-user {
+    opacity: 0.8;
+    font-size: 0.9rem;
+}
+
+.navbar-logout {
+    display: inline;
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+    background: var(--color-bg-secondary);
+    color: var(--color-text);
+    cursor: pointer;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.btn:hover {
+    text-decoration: none;
+    opacity: 0.9;
+}
+
+.btn-primary {
+    background-color: var(--color-primary);
+    color: #ffffff;
+    border-color: var(--color-primary);
+}
+
+.btn-primary:hover {
+    background-color: var(--color-primary-hover);
+}
+
+.btn-link {
+    background: none;
+    border: none;
+    color: var(--color-navbar-text);
+    cursor: pointer;
+    padding: 0;
+    font-size: inherit;
+}
+
+/* Forms */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.25rem;
+    font-weight: 500;
+}
+
+.form-input {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid var(--color-input-border);
+    border-radius: 4px;
+    background-color: var(--color-input-bg);
+    color: var(--color-text);
+    font-size: 1rem;
+}
+
+.form-input:focus {
+    outline: 2px solid var(--color-primary);
+    outline-offset: -1px;
+}
+
+/* Auth form */
+.auth-form {
+    max-width: 400px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: var(--color-bg-secondary);
+    border-radius: 8px;
+    border: 1px solid var(--color-border);
+}
+
+.auth-form h2 {
+    margin-bottom: 1.5rem;
+}
+
+/* Alerts */
+.alert {
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+    margin-bottom: 1rem;
+}
+
+.alert-error {
+    background-color: color-mix(in srgb, var(--color-error) 10%, transparent);
+    border: 1px solid var(--color-error);
+    color: var(--color-error);
+}
+
+.alert-success {
+    background-color: color-mix(in srgb, var(--color-success) 10%, transparent);
+    border: 1px solid var(--color-success);
+    color: var(--color-success);
+}
+
+/* Chat — layout with sidebar */
+.chat-layout {
+    display: flex;
+    gap: 1.5rem;
+    max-width: 1100px;
+    margin: 0 auto;
+    min-height: 70vh;
+}
+
+.chat-sidebar {
+    width: 220px;
+    flex-shrink: 0;
+}
+
+.sidebar-new-chat {
+    display: block;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 0.75rem;
+}
+
+.session-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.session-link {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0.75rem;
+    border-radius: 6px;
+    color: var(--color-text);
+    font-size: 0.85rem;
+    text-decoration: none;
+    margin-bottom: 2px;
+}
+
+.session-link:hover {
+    background: var(--color-bg-secondary);
+    text-decoration: none;
+}
+
+.session-link.active {
+    background: var(--color-primary);
+    color: #fff;
+}
+
+.session-link.active .session-date {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.session-date {
+    font-size: 0.7rem;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+}
+
+.chat-main {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-main h2 {
+    margin-bottom: 0.75rem;
+}
+
+/* Chat messages area */
+.chat-messages {
+    flex: 1;
+    min-height: 300px;
+    max-height: 60vh;
+    overflow-y: auto;
+    padding: 1rem;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    background: var(--color-bg-secondary);
+}
+
+.chat-empty {
+    text-align: center;
+    color: var(--color-text-muted);
+    padding: 3rem 1rem;
+}
+
+.chat-message {
+    padding: 0.75rem 1rem;
+    margin-bottom: 0.75rem;
+    border-radius: 8px;
+}
+
+.chat-message-user {
+    background-color: var(--color-chat-user);
+    margin-left: 2rem;
+}
+
+.chat-message-assistant {
+    background-color: var(--color-chat-assistant);
+    margin-right: 2rem;
+}
+
+.chat-message-role {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: var(--color-text-muted);
+    margin-bottom: 0.25rem;
+}
+
+.chat-input-form {
+    display: flex;
+}
+
+.chat-input-group {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.chat-input {
+    flex: 1;
+}
+
+/* Theme toggle — segmented control */
+.theme-toggle {
+    display: inline-flex;
+    background: rgba(0, 0, 0, 0.25);
+    border-radius: 6px;
+    padding: 2px;
+    gap: 2px;
+    margin-left: 0.25rem;
+}
+
+.theme-toggle-btn {
+    width: 28px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    border-radius: 4px;
+    background: transparent;
+    color: var(--color-navbar-text);
+    font-size: 0.9rem;
+    cursor: pointer;
+    opacity: 0.5;
+    transition: opacity 0.15s, background-color 0.15s;
+    line-height: 1;
+}
+
+.theme-toggle-btn:hover {
+    opacity: 0.8;
+}
+
+.theme-toggle-btn.active {
+    background: rgba(255, 255, 255, 0.2);
+    opacity: 1;
+}
+
+/* Error pages */
+.error-page {
+    text-align: center;
+    padding: 4rem 1rem;
+}
+
+.error-page h1 {
+    font-size: 5rem;
+    color: var(--color-text-muted);
+}
+
+.error-page p {
+    margin: 1rem 0 2rem;
+    color: var(--color-text-muted);
+}

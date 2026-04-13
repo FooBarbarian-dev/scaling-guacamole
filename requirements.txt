@@ -1,0 +1,14 @@
+Django>=6.0,<7.0
+djangorestframework>=3.15,<4.0
+drf-spectacular>=0.28
+django-extensions>=3.2
+django-htmx>=1.21
+django-cors-headers>=4.6
+django-ai-assistant>=0.4.0
+django-temporalio>=2.0.0
+langchain-openai>=0.3
+psycopg[binary]>=3.2
+redis>=5.0
+gunicorn>=23.0
+whitenoise>=6.8
+django-environ>=0.11
